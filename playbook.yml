@@ -1,0 +1,14 @@
+- hosts: servers
+  gather_facts: no
+
+  vars:
+  
+  tasks:
+    - name: install software
+      ansible.builtin.apt:
+        pkg: 
+          - git
+          - nginx
+        state: present
+        update_cache: yes
+      become: yes
