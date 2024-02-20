@@ -1,0 +1,24 @@
+- name: Homework 1
+
+  hosts: servers
+
+  gather_facts: false
+
+  vars:
+    username: ansible-worker
+
+  tasks:
+    - name: Install software
+      ansible.builtin.apt:
+        pkg:
+          - git
+          - nginx
+        state: present
+        update_cache: true
+      become: true
+
+    - name: Create user
+      ansible.builtin.user:
+        name: "{{ username }}"
+        state: present
+      become: true
