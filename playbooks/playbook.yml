@@ -1,6 +1,6 @@
 - name: Homework 1
 
-  hosts: servers
+  hosts: all
 
   gather_facts: false
 
