@@ -2,23 +2,43 @@
 
   hosts: all
 
-  gather_facts: false
-
   vars:
     username: ansible-worker
+    ssh_local_path: "../ssh_keys/*"
+    ssh_remote_dir: "/home/{{ username }}/.ssh/"
+    site_local_path: "../www"
+    site_dir: "/home/{{ username }}/www/"
+
+  roles:
+    - role: geerlingguy.git
+    - role: nginxinc.nginx
 
   tasks:
-    - name: Install software
-      ansible.builtin.apt:
-        pkg:
-          - git
-          - nginx
-        state: present
-        update_cache: true
-      become: true
-
     - name: Create user
       ansible.builtin.user:
         name: "{{ username }}"
         state: present
       become: true
+
+    - name: Copy ssh keys to user
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ ssh_remote_dir }}"
+        mode: "0644"
+      loop:
+        - "{{ ssh_local_files }}"
+      become: "{{ username }}"
+
+    - name: Create www directory
+      ansible.builtin.file:
+        path: "{{ site_dir }}"
+        state: directory
+        mode: "0644"
+      become: "{{ username }}"
+
+    - name: Copy index page to user
+      ansible.builtin.copy:
+        src: "{{ webpage_local_path }}"
+        dest: "{{ site_dir }}"
+        mode: "0644"
+      become: "{{ username }}"
