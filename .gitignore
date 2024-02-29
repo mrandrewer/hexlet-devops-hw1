@@ -1,2 +1,5 @@
 ssh_keys
 .vscode
+.vagrant
+ansible.cfg
+Vagrantfile
