@@ -1,0 +1,35 @@
+- name: Homework 1
+
+  hosts: all
+
+  vars:
+    username: ansible-worker
+    ssh_local_path: "../ssh_keys/*"
+
+  tasks:
+    - name: Create user
+      ansible.builtin.user:
+        name: "{{ username }}"
+        state: present
+      become: true
+
+    - name: Copy ssh keys to user
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: ~/.ssh
+        mode: "0600"
+      with_fileglob:
+        - "{{ ssh_local_path }}"
+      become: true
+      become_user: "{{ username }}"
+
+    - name: Ensure github.com is a known host
+      ansible.builtin.lineinfile:
+        dest: ~/.ssh/known_hosts
+        create: true
+        state: present
+        line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+        regexp: "^github\\.com"
+        mode: "0600"
+      become: true
+      become_user: "{{ username }}"
