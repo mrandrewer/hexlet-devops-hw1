@@ -9,3 +9,15 @@
 
   tasks:
     
+    - name: Copy nginx config
+      ansible.builtin.copy:
+        src: ansible.iphilka.ru.conf
+        dest: /etc/nginx/sites-available/ansible.iphilka.ru.conf
+      # notify: Reload Nginx
+    
+    - name: Create link in sites-enabled
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/ansible.iphilka.ru.conf
+        dest: /etc/nginx/sites-enabled/ansible.iphilka.ru.conf
+        state: link
+
