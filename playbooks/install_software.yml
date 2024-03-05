@@ -1,0 +1,15 @@
+- name: Install software
+
+  hosts: all
+
+  become: true
+
+  roles:
+    - role: geerlingguy.git
+    - role: nginxinc.nginx
+
+  tasks:
+    - name: Install acl
+      ansible.builtin.apt:
+        name: acl
+        state: present
