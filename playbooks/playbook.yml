@@ -4,69 +4,8 @@
 
   vars:
     username: ansible-worker
-    ssh_local_path: "../ssh_keys/*"
-    ssh_remote_dir: "/home/{{ username }}/.ssh/"
     site_local_path: "../www/index.html"
     site_dir: "/home/{{ username }}/www/"
 
-  roles:
-    - role: geerlingguy.git
-      become: true
-    - role: nginxinc.nginx
-      become: true
-
-
   tasks:
-    - name: Install software
-      ansible.builtin.apt:
-        name: acl
-        state: present
-      become: true
-
-    - name: Create user
-      ansible.builtin.user:
-        name: "{{ username }}"
-        state: present
-      become: true
-
-    - name: Copy ssh keys to user
-      ansible.builtin.copy:
-        src: "{{ item }}"
-        dest: "{{ ssh_remote_dir }}"
-        mode: "0600"
-      with_fileglob:
-        - "{{ ssh_local_path }}"
-      become: true
-      become_user: "{{ username }}"
-
-    - name: Create www directory
-      ansible.builtin.file:
-        path: "{{ site_dir }}"
-        state: directory
-        mode: "0744"
-      become: true
-      become_user: "{{ username }}"
-
-    - name: ensure github.com is a known host
-      ansible.builtin.known_hosts:
-        dest: "{{ ssh_remote_dir }}known_hosts"
-        name: github.com
-        state: present
-        line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
-        regexp: "^github\\.com"
-
-    - name: Clone repository
-      ansible.builtin.git:
-        repo: git@github.com:iphilka/stud-template.git
-        dest: "{{ site_dir }}"
-      become: true
-      become_user: "{{ username }}"
-
-    - name: Copy index page to user
-      ansible.builtin.copy:
-        src: "{{ site_local_path }}"
-        dest: "{{ site_dir }}"
-        mode: "0644"
-      become: true
-      become_user: "{{ username }}"
-
+    
