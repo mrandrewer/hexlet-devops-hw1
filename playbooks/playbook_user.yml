@@ -40,4 +40,3 @@
         groups: "{{ username }}"
         append: true
       become: true
-

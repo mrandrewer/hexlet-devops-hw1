@@ -4,13 +4,14 @@
 
   vars:
     username: ansible-worker
-    site_local_path: "../files/index.html"
-    site_dir: "/home/{{ username }}/www/stud-template"
+    index_local_path: "../files/index.html"
+    website_dir: "/home/{{ username }}/www/stud-template"
+    repository_url: "git@github.com:iphilka/stud-template.git"
 
   tasks:
-    - name: Create www directory
+    - name: Create website directory
       ansible.builtin.file:
-        path: "{{ site_dir }}"
+        path: "{{ website_dir }}"
         state: directory
         mode: u=+rwx,g=rwx,o=rx
       become: true
@@ -18,8 +19,8 @@
 
     - name: Clone repository
       ansible.builtin.git:
-        repo: git@github.com:iphilka/stud-template.git
-        dest: "{{ site_dir }}"
+        repo: "{{ repository_url }}"
+        dest: "{{ website_dir }}"
         force: true
       become: true
       become_user: "{{ username }}"
@@ -27,8 +28,8 @@
 
     - name: Copy index page to user
       ansible.builtin.copy:
-        src: "{{ site_local_path }}"
-        dest: "{{ site_dir }}"
+        src: "{{ index_local_path }}"
+        dest: "{{ website_dir }}"
         mode: "0644"
       become: true
       become_user: "{{ username }}"
