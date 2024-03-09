@@ -1,4 +1,4 @@
-- name: Homework 1
+- name: Setup user
 
   hosts: all
 
