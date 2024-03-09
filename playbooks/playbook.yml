@@ -4,20 +4,38 @@
 
   vars:
     username: ansible-worker
-    site_local_path: "../www/index.html"
+    site_local_path: "../files/index.html"
+    config_local_path: "../files/ansible.iphilka.ru.conf"
     site_dir: "/home/{{ username }}/www/"
 
   tasks:
-    
+
     - name: Copy nginx config
       ansible.builtin.copy:
-        src: ansible.iphilka.ru.conf
+        src: "{{ config_local_path }}"
         dest: /etc/nginx/sites-available/ansible.iphilka.ru.conf
-      # notify: Reload Nginx
-    
-    - name: Create link in sites-enabled
+        mode: "0644"
+      notify: Restart Nginx
+      become: true
+
+    - name: Enable iphilka site
       ansible.builtin.file:
         src: /etc/nginx/sites-available/ansible.iphilka.ru.conf
         dest: /etc/nginx/sites-enabled/ansible.iphilka.ru.conf
         state: link
+      notify: Restart Nginx
+      become: true
+    
+    - name: Disable default site
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: Restart Nginx
+      become: true
 
+  handlers:
+    - name: Restart Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
+      become: true

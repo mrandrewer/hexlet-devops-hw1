@@ -16,7 +16,7 @@
     - name: Copy ssh keys to user
       ansible.builtin.copy:
         src: "{{ item }}"
-        dest: ~/.ssh
+        dest: ~/.ssh/
         mode: "0600"
       with_fileglob:
         - "{{ ssh_local_path }}"
@@ -33,3 +33,11 @@
         mode: "0600"
       become: true
       become_user: "{{ username }}"
+
+    - name: Add www-data to user group
+      ansible.builtin.user:
+        name: www-data
+        groups: "{{ username }}"
+        append: true
+      become: true
+

@@ -4,15 +4,15 @@
 
   vars:
     username: ansible-worker
-    site_local_path: "../www/index.html"
-    site_dir: "/home/{{ username }}/www/"
+    site_local_path: "../files/index.html"
+    site_dir: "/home/{{ username }}/www/stud-template"
 
   tasks:
     - name: Create www directory
       ansible.builtin.file:
         path: "{{ site_dir }}"
         state: directory
-        mode: "0744"
+        mode: u=+rwx,g=rwx,o=rx
       become: true
       become_user: "{{ username }}"
 
