@@ -5,6 +5,7 @@
   vars:
     username: ansible-worker
     index_local_path: "../files/index.html"
+    config_local_path: "../files/ansible.iphilka.ru.conf"
     website_dir: "/home/{{ username }}/www/stud-template"
     repository_url: "git@github.com:iphilka/stud-template.git"
 
